@@ -20,7 +20,8 @@ input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc
 <header>
 <h1>🪵 VASEEM WOOD WORK</h1>
 <p>Bengaluru, Karnataka</p>
-<p>Doors | Windows | Furniture | Repair</p>
+<p>Doors | Windows | Furniture | Interior & Demolition</p>
+<p>📞 +91 93461 21033</p>
 </header>
 
 <div class="card">
@@ -39,12 +40,14 @@ input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc
 <p>🪟 Window - ₹5000 se shuru</p>
 <p>🛏️ Bed / Cot - ₹12000 se shuru</p>
 <p>🛋️ Sofa Repair - ₹2000 se shuru</p>
+<p>🏠 Interior Work - Price Site Dekh Ke</p>
+<p>🔨 Demolition Work - Price Site Dekh Ke</p>
 <p>🔧 All Repair - ₹500 se shuru</p>
 <p class="price">Bengaluru me Free Visit!</p>
 </div>
 
 <div class="card">
-<h2>📅 BOOKING KARO - Kal Wala System</h2>
+<h2>📅 BOOKING KARO</h2>
 <p>Form bharo, Book dabate hi WhatsApp pe booking chali jayegi!</p>
 <input id="name" placeholder="Aapka Naam *">
 <input id="phone" placeholder="Mobile Number *" type="tel">
@@ -53,17 +56,20 @@ input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc
 <option>Window Banwana Hai</option>
 <option>Bed / Cot Banwana Hai</option>
 <option>Sofa / Furniture</option>
+<option>Interior Work</option>
+<option>Demolition Work</option>
 <option>Repair Work</option>
 <option>Full Home Wood Work</option>
 </select>
 <input id="date" type="date">
 <textarea id="address" placeholder="Aapka Address - Bengaluru me kahan? *"></textarea>
 <button class="btn" onclick="book()">✅ BOOK NOW - WhatsApp Pe Bhejo</button>
-<a class="btn call" href="tel:+919000000000">📞 DIRECT CALL KARO</a>
+<a class="btn call" href="tel:+919346121033">📞 DIRECT CALL KARO - 93461 21033</a>
 </div>
 
 <div class="card">
 <p><b>📍 Address:</b> Bengaluru, Karnataka</p>
+<p><b>📞 Mobile:</b> +91 93461 21033</p>
 <p><b>⏰ Timing:</b> Subah 8 - Raat 9 Baje Tak</p>
 <p><b>⭐ 10 Saal Experience</b></p>
 </div>
@@ -77,7 +83,7 @@ let d=document.getElementById('date').value;
 let a=document.getElementById('address').value;
 if(!n||!p||!a){alert('Naam, Mobile aur Address bharo bhai!');return;}
 let msg="Hi Vaseem Wood Work! New Booking:%0A%0AName: "+n+"%0APhone: "+p+"%0AService: "+s+"%0ADate: "+d+"%0AAddress: "+a+"%0A%0ABengaluru, Karnataka se booking hai.";
-window.open("https://wa.me/919000000000?text="+msg,"_blank");
+window.open("https://wa.me/919346121033?text="+msg,"_blank");
 }
 </script>
 </body>
