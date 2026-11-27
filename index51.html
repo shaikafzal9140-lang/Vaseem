@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><title>Study Saathi - Har Problem Ka Solution</title></head>
+<body style="font-family:Arial; padding:20px; background:#f2f2f2;">
+<h1>📚 Study Saathi</h1>
+<p>Student ki har problem ka Board Style Solution</p>
+
+<h3>Subject Chun:</h3>
+<select id="sub" style="padding:10px; width:90%;">
+<option>Maths - Differentiation / Integration / Complex Number</option>
+<option>Physics - Numerical / Formula</option>
+<option>Chemistry - Reaction / Mole Concept</option>
+<option>English / Telugu / Hindi</option>
+</select>
+
+<h3>Question Ka Photo Lo:</h3>
+<input type="file" accept="image/*" capture="camera">
+<br><br>
+<p>Ya Question Yahan Likh:</p>
+<input id="q" placeholder="Jaise: Differentiate x^2 + 3x" style="width:90%; padding:10px;">
+<br><br>
+<button onclick="solve()" style="padding:12px 20px; background:green; color:white; border:none;">Solve Karo - Teacher Style</button>
+
+<div id="ans" style="background:white; padding:15px; margin-top:20px;"></div>
+
+<script>
+function solve(){
+  let q = document.getElementById('q').value;
+  let sub = document.getElementById('sub').value;
+  document.getElementById('ans').innerHTML =
+  "<h3>Board Style Answer - " + sub + "</h3>" +
+  "<b>Question:</b> " + q + "<br><br>" +
+  "<b>Step 1 - Kya diya hai?</b><br>Question ko dhyaan se padho, kya poocha hai likho.<br><br>" +
+  "<b>Step 2 - Kaunsa Formula Lagega?</b><br>Is chapter ka main formula yahan likhenge.<br>Jaise Differentiation me: d/dx (x^n) = n*x^(n-1)<br><br>" +
+  "<b>Step 3 - Chota-Chota Solve:</b><br>Ek-ek part ko alag karke solve karenge.<br><br>" +
+  "<b>Method 1 - Formula Wala:</b><br>Seedha formula laga ke answer.<br><br>" +
+  "<b>Method 2 - Aasan Wala:</b><br>Shortcut / aasan tareeke se wahi answer.<br><br>" +
+  "<b>Method 3 - Check Wala:</b><br>Answer ko wapas check karke dekhenge.<br><br>" +
+  "<b>✅ Final Answer: Yahan aayega</b><br>Samajh nahi aaya to dobara pooch lo!";
+}
+</script>
+
+<h3>Teacher Ke Liye:</h3>
+<button onclick="alert('Teacher: Homework + Attendance + Marks yahan se')">Teacher Panel</button>
+
+</body>
+</html>
