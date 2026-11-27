@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Study Saathi - All India Maths</title></head>
+<body style="font-family:Arial;padding:15px;background:#f2f2f2">
+
+<h1>Study Saathi</h1>
+<p>Class 1 to IAS / IPS - All India Maths</p>
+
+<div style="background:white;padding:15px;border-radius:10px">
+<h3>1. Select Your Class</h3>
+<select id="class" onchange="showChapters()" style="width:95%;padding:10px">
+<option>Class 1 - 5</option>
+<option>Class 6 - 8</option>
+<option>Class 9 - 10</option>
+<option>Class 11 - 12</option>
+<option>JEE / NEET</option>
+<option>UPSC - IAS / IPS / CSAT</option>
+</select>
+
+<h3>2. Select Chapter</h3>
+<select id="chapter" style="width:95%;padding:10px"></select>
+<br><br>
+<button onclick="showFormulas()" style="padding:12px;background:green;color:white;border:none;border-radius:8px">Show All Formulas of This Chapter</button>
+<div id="formulaBox" style="background:#eef7ff;padding:10px;margin-top:10px;border-radius:8px">Select chapter to see all formulas.</div>
+</div>
+
+<div style="background:white;padding:15px;border-radius:10px;margin-top:15px">
+<h3>3. Camera / Question</h3>
+<button onclick="alert('Camera Open - Take Photo of Question')">Open Camera</button>
+<br><br>
+<input id="q" placeholder="Type your question" style="width:95%;padding:10px">
+<br><br>
+<button onclick="solve()" style="padding:12px;background:#00a651;color:white;border:none;border-radius:8px">Get Solution - 3 Methods</button>
+<div id="ans" style="margin-top:10px"></div>
+</div>
+
+<script>
+let data = {
+"Class 1 - 5": ["Counting & Numbers","Addition","Subtraction","Multiplication","Tables 1 to 20","Division","Fractions","Shapes & Geometry","Money & Time"],
+"Class 6 - 8": ["Number System","Fractions & Decimals","Algebra","Ratio & Proportion","Percentage","Geometry","Mensuration","Data Handling","Introduction to Graphs"],
+"Class 9 - 10": ["Real Numbers","Polynomials","Linear Equations","Triangles","Circles","Trigonometry","Surface Areas & Volumes","Probability","Statistics","Quadratic Equations"],
+"Class 11 - 12": ["Sets & Functions","Trigonometry","Complex Numbers","Matrices & Determinants","Differentiation","Integration","Vectors & 3D Geometry","Probability","Limits & Continuity","Differential Equations"],
+"JEE / NEET": ["JEE - Algebra","JEE - Calculus","JEE - Trigonometry","JEE - Coordinate Geometry","JEE - Vectors","NEET - Physics Maths"],
+"UPSC - IAS / IPS / CSAT": ["Number System","Percentage","Profit & Loss","Time & Work","Time Speed Distance","Ratio & Average","Data Interpretation","Reasoning & Mental Ability","Permutation & Combination"]
+};
+
+function showChapters(){
+  let c = document.getElementById('class').value;
+  let ch = document.getElementById('chapter');
+  ch.innerHTML = "";
+  data[c].forEach(function(x){ ch.innerHTML += "<option>"+x+"</option>"; });
+}
+function showFormulas(){
+  let ch = document.getElementById('chapter').value;
+  document.getElementById('formulaBox').innerHTML = "<b>All Formulas - "+ch+"</b><br><br>All important formulas of "+ch+" will appear here.<br>Example: Main Formula + 10-20 Formulas of this chapter.<br><br>Click Get Solution for step by step answer.";
+}
+function solve(){
+  let q = document.getElementById('q').value;
+  let ch = document.getElementById('chapter').value;
+  document.getElementById('ans').innerHTML = "<b>This is your question:</b> "+q+"<br><br><b>Chapter:</b> "+ch+"<br><br><b>Method 1 - Formula Method:</b> Formula laga ke solve.<br><br><b>Method 2 - Easy Method:</b> Aasan tareeke se solve.<br><br><b>Method 3 - Check Method:</b> Answer ko check karo.<br><br><b>Final Answer will come here.</b>";
+}
+showChapters();
+</script>
+</body>
+</html>
