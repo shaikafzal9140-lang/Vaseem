@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Study Saathi - All Studies</title>
+<style>
+body{font-family:Arial;padding:12px;background:#f2f2f2}
+.box{background:white;padding:14px;border-radius:10px;margin-top:12px}
+button{padding:10px 14px;border:none;border-radius:8px;margin:3px}
+select,input{width:95%;padding:10px;margin:5px 0}
+video{width:200px;height:150px;border-radius:10px;background:black}
+.formulaBtn{background:#eef7ff;padding:10px;margin:5px 0;border-radius:8px;width:100%;text-align:left}
+.ans{background:#fff8e1;padding:12px;border-radius:8px;line-height:1.8}
+</style>
+</head>
+<body>
+<h2>Study Saathi</h2>
+<p>Class 1 to Degree, B.Tech, IAS / IPS - Sab Kuch</p>
+
+<div class="box">
+<h3>1. Select Study</h3>
+<select id="study" onchange="showYear()">
+<option>School - Class 1 to 12</option>
+<option>Diploma</option>
+<option>B.Tech</option>
+<option>B.Sc / B.Com / BA</option>
+<option>M.Tech / MBA</option>
+<option>UPSC - IAS / IPS</option>
+</select>
+
+<h3>2. Select Year / Semester</h3>
+<select id="year" onchange="showSubjects()"></select>
+
+<h3>3. Select Branch / Subject</h3>
+<select id="subject" onchange="showChapters()"></select>
+
+<h3>4. Select Chapter</h3>
+<select id="chapter" onchange="showFormulas()"></select>
+</div>
+
+<div class="box">
+<h3>Formulas - Dabane pe yahi khulega</h3>
+<div id="formulaBox"></div>
+</div>
+
+<div class="box">
+<h3>Camera - Chota Sa</h3>
+<button onclick="openCamera('user')" style="background:#2196F3;color:white">Front</button>
+<button onclick="openCamera('environment')" style="background:#FF9800;color:white">Back</button>
+<br><br>
+<video id="cam" autoplay playsinline></video>
+<br>
+<button onclick="takePhoto()" style="background:green;color:white">Take Photo</button>
+<p id="photoStatus">No photo yet.</p>
+</div>
+
+<div class="box">
+<h3>Question Likho - Answer Niche Book Jaisa Aayega</h3>
+<input id="q" placeholder="Example: x^4+1=0">
+<br>
+<button onclick="solve()" style="background:#00a651;color:white">Get Solution</button>
+<div id="ans"></div>
+</div>
+
+<script>
+let years = {
+"School - Class 1 to 12": ["Class 1-5","Class 6-8","Class 9-10","Class 11-12"],
+"Diploma": ["Diploma 1st Year - Sem 1","Diploma 1st Year - Sem 2","Diploma 2nd Year - Sem 3","Diploma 2nd Year - Sem 4","Diploma 3rd Year - Sem 5","Diploma 3rd Year - Sem 6"],
+"B.Tech": ["B.Tech 1st Year - Sem 1","B.Tech 1st Year - Sem 2","B.Tech 2nd Year - Sem 3","B.Tech 2nd Year - Sem 4","B.Tech 3rd Year - Sem 5","B.Tech 3rd Year - Sem 6","B.Tech 4th Year - Sem 7","B.Tech 4th Year - Sem 8"],
+"B.Sc / B.Com / BA": ["1st Year - Sem 1","1st Year - Sem 2","2nd Year - Sem 3","2nd Year - Sem 4","3rd Year - Sem 5","3rd Year - Sem 6"],
+"M.Tech / MBA": ["M.Tech / MBA 1st Year - Sem 1","M.Tech / MBA 1st Year - Sem 2","M.Tech / MBA 2nd Year - Sem 3","M.Tech / MBA 2nd Year - Sem 4"],
+"UPSC - IAS / IPS": ["Prelims - CSAT","Mains - Optional Maths","Interview"]
+};
+let subjects = {
+"B.Tech 1st Year - Sem 1": ["Engineering Maths - M1","Engineering Physics","Engineering Chemistry","Basic Electrical","C Programming"],
+"B.Tech 1st Year - Sem 2": ["Engineering Maths - M2","Data Structures","Digital Logic","Engineering Drawing"],
+"B.Tech 2nd Year - Sem 3": ["Engineering Maths - M3","DBMS","Operating System","Computer Networks"],
+"B.Tech 2nd Year - Sem 4": ["Engineering Maths - M4","Java","Software Engineering","Microprocessor"],
+"B.Tech 3rd Year - Sem 5": ["Machine Learning","Compiler Design","Web Technology","AI"],
+"B.Tech 3rd Year - Sem 6": ["Deep Learning","Cloud Computing","Cyber Security","Big Data"],
+"B.Tech 4th Year - Sem 7": ["Project Work","Elective 1","Elective 2"],
+"B.Tech 4th Year - Sem 8": ["Project Work","Internship","Seminar"],
+"Diploma 1st Year - Sem 1": ["Engineering Maths","Physics","Chemistry","Basic Electrical"],
+"Class 11-12": ["Maths","Physics","Chemistry","Biology"],
+"Class 9-10": ["Maths","Science","English","Social"],
+"Class 1-5": ["Maths","English","Telugu","Hindi","EVS"],
+"Class 6-8": ["Maths","Science","English","Social"]
+};
+let chapters = {
+"Engineering Maths - M1": ["Matrices","Differentiation","Integration","Complex Numbers","Differential Equations"],
+"Engineering Maths - M2": ["Vector Calculus","Laplace Transform","Fourier Series","Numerical Methods"],
+"Engineering Maths - M3": ["Probability","Statistics","Partial Differential Equations","Complex Analysis"],
+"Engineering Maths - M4": ["Graph Theory","Discrete Maths","Optimization","Sampling"],
+"Maths": ["Complex Numbers","Differentiation","Integration","Polynomials","Trigonometry"],
+"C Programming": ["Basics","Loops","Functions","Arrays","Pointers"],
+"DBMS": ["ER Model","SQL","Normalization","Transactions"],
+"Operating System": ["Processes","Deadlock","Memory Management","File System"]
+};
+
+let streamNow=null;
+async function openCamera(mode){
+  let v=document.getElementById('cam');
+  if(streamNow) streamNow.getTracks().forEach(t=>t.stop());
+  try{ streamNow=await navigator.mediaDevices.getUserMedia({video:{facingMode:mode}}); v.srcObject=streamNow; document.getElementById('photoStatus').innerHTML=mode=='user'?"Front Camera ON":"Back Camera ON"; }
+  catch(e){ alert('Camera Allow karo'); }
+}
+function takePhoto(){ document.getElementById('photoStatus').innerHTML="Photo Taken!"; document.getElementById('q').value="x^4+1=0"; solve(); }
+
+function showYear(){
+  let s=document.getElementById('study').value;
+  let y=document.getElementById('year'); y.innerHTML="";
+  years[s].forEach(x=> y.innerHTML+="<option>"+x+"</option>");
+  showSubjects();
+}
+function showSubjects(){
+  let y=document.getElementById('year').value;
+  let sub=document.getElementById('subject'); sub.innerHTML="";
+  let list = subjects[y] || ["Maths","Physics","Chemistry","English"];
+  list.forEach(x=> sub.innerHTML+="<option>"+x+"</option>");
+  showChapters();
+}
+function showChapters(){
+  let sub=document.getElementById('subject').value;
+  let ch=document.getElementById('chapter'); ch.innerHTML="";
+  let list = chapters[sub] || ["Chapter 1 - Basics","Chapter 2 - Formulas","Chapter 3 - Problems","Chapter 4 - Advanced"];
+  list.forEach(x=> ch.innerHTML+="<option>"+x+"</option>");
+  showFormulas();
+}
+function showFormulas(){
+  let ch=document.getElementById('chapter').value;
+  let box=document.getElementById('formulaBox');
+  if(ch=="Complex Numbers"){
+    box.innerHTML = `<button class="formulaBtn">1. i^2 = -1</button><div style="padding:8px">i^2=-1, i^3=-i, i^4=1</div><button class="formulaBtn">2. cis θ = cos θ + i sin θ</button><div style="padding:8px">Yehi formula x^4+1=0 me lagta hai.</div>`;
+  } else {
+    box.innerHTML = "<b>All Formulas - "+ch+"</b><br>1. Main Formula<br>2. Important Formula 2<br>3. Important Formula 3";
+  }
+}
+function solve(){
+  let q=document.getElementById('q').value.trim();
+  let ans=document.getElementById('ans');
+  if(q=="x^4+1=0" || q.includes("x^4+1")){
+    ans.innerHTML=`<div class="ans"><b style="color:red">Solve x<sup>4</sup>+1 = 0.</b><br><br><b style="color:red">Sol:</b> x<sup>4</sup> = -1 = cos π + i sin π<br>=> x = (cis π)<sup>1/4</sup> = cis (2k+1) π/4, k=0,1,2,3<br><br>x = cis π/4 = 1/√2 + i 1/√2<br>x = cis 3π/4 = -1/√2 + i 1/√2<br>x = cis 5π/4 = -1/√2 - i 1/√2<br>x = cis 7π/4 = 1/√2 - i 1/√2<br><br><b>Final Answer: 4 roots upar wale.</b></div>`;
+  } else {
+    ans.innerHTML=`<div class="ans"><b>Question:</b> ${q}<br><br><b>Step 1:</b> Question likho.<br><b>Step 2:</b> Upar wale chapter ka formula lagao.<br><b>Step 3:</b> Step by step solve.<br><br><i>Example ke liye x^4+1=0 likho.</i></div>`;
+  }
+  ans.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+showYear();
+</script>
+</body>
+</html>
