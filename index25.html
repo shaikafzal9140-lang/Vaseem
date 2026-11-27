@@ -1,90 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vaseem Wood Work - Bengaluru</title>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Study Saathi</title>
 <style>
-body{font-family:Arial;background:#FFF8E7;margin:0;text-align:center}
-header{background:#4A2C0A;color:white;padding:20px}
-header h1{margin:0;font-size:26px}
-.card{background:white;margin:12px;padding:15px;border-radius:15px;box-shadow:0 2px 10px #ccc;text-align:left}
-img{width:100%;border-radius:10px;margin-top:8px}
-input,select,textarea{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:10px;font-size:16px;box-sizing:border-box}
-.btn{display:block;background:#25D366;color:white;padding:15px;margin:10px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:18px;border:none;width:calc(100% - 20px);cursor:pointer}
-.call{background:#4A2C0A}
-.price{color:green;font-weight:bold}
+body{font-family:Arial;padding:12px;background:#f0f0f0}
+.box{background:white;padding:14px;border-radius:12px;margin-top:12px}
+select,input{width:100%;padding:12px;margin:6px 0;box-sizing:border-box}
+button{padding:12px 16px;border:none;border-radius:10px;margin:4px}
+video{width:100%;max-width:320px;border-radius:10px;background:black;display:none}
+.ans{background:#fffde7;padding:14px;border-radius:10px;line-height:1.9;margin-top:10px}
 </style>
 </head>
 <body>
-<header>
-<h1>🪵 VASEEM WOOD WORK</h1>
-<p>Bengaluru, Karnataka</p>
-<p>Doors | Windows | Furniture | Interior & Demolition</p>
-<p>📞 +91 93461 21033</p>
-</header>
+<h2>Study Saathi</h2>
+<p>Class 1 to B.Tech, Diploma, UPSC - All Subjects</p>
 
-<div class="card">
-<h2>📸 Hamara Kaam - Photos</h2>
-<img src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=800">
-<p>✅ Modern Bedroom Design</p>
-<img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800">
-<p>✅ Sofa & Living Room Work</p>
-<img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800">
-<p>✅ Bed / Cot - Strong Wood</p>
-</div>
-
-<div class="card">
-<h2>💰 Services & Price</h2>
-<p>🚪 Door - ₹8000 se shuru</p>
-<p>🪟 Window - ₹5000 se shuru</p>
-<p>🛏️ Bed / Cot - ₹12000 se shuru</p>
-<p>🛋️ Sofa Repair - ₹2000 se shuru</p>
-<p>🏠 Interior Work - Price Site Dekh Ke</p>
-<p>🔨 Demolition Work - Price Site Dekh Ke</p>
-<p>🔧 All Repair - ₹500 se shuru</p>
-<p class="price">Bengaluru me Free Visit!</p>
-</div>
-
-<div class="card">
-<h2>📅 BOOKING KARO</h2>
-<p>Form bharo, Book dabate hi WhatsApp pe booking chali jayegi!</p>
-<input id="name" placeholder="Aapka Naam *">
-<input id="phone" placeholder="Mobile Number *" type="tel">
-<select id="service">
-<option>Door Banwana Hai</option>
-<option>Window Banwana Hai</option>
-<option>Bed / Cot Banwana Hai</option>
-<option>Sofa / Furniture</option>
-<option>Interior Work</option>
-<option>Demolition Work</option>
-<option>Repair Work</option>
-<option>Full Home Wood Work</option>
+<div class="box">
+<b>1. SELECT SECTION</b>
+<select id="section" onchange="loadChapters()">
+<option>1st to 5th</option>
+<option>6th to 8th</option>
+<option>9th to 10th</option>
+<option>Inter - 11th to 12th</option>
+<option>Degree - All Semesters</option>
+<option>B.Tech - Sem 1 to 8</option>
+<option>Diploma - Sem 1 to 6</option>
+<option>UPSC - IAS / IPS</option>
 </select>
-<input id="date" type="date">
-<textarea id="address" placeholder="Aapka Address - Bengaluru me kahan? *"></textarea>
-<button class="btn" onclick="book()">✅ BOOK NOW - WhatsApp Pe Bhejo</button>
-<a class="btn call" href="tel:+919346121033">📞 DIRECT CALL KARO - 93461 21033</a>
+<b>2. SELECT CHAPTER</b>
+<select id="chapter" onchange="showFormula()"></select>
+<div id="formulaBox"></div>
 </div>
 
-<div class="card">
-<p><b>📍 Address:</b> Bengaluru, Karnataka</p>
-<p><b>📞 Mobile:</b> +91 93461 21033</p>
-<p><b>⏰ Timing:</b> Subah 8 - Raat 9 Baje Tak</p>
-<p><b>⭐ 10 Saal Experience</b></p>
+<div class="box">
+<b>3. CAMERA - Take Photo & Crop</b><br>
+<button onclick="openCam('user')" style="background:#2196F3;color:white">Front Camera</button>
+<button onclick="openCam('environment')" style="background:#FF9800;color:white">Back Camera</button><br><br>
+<video id="cam" autoplay playsinline></video>
+<canvas id="canvas" style="display:none"></canvas><br>
+<button onclick="takePhoto()" style="background:green;color:white;width:100%">Take Photo</button>
+<p id="camStatus">Camera is OFF.</p>
+<img id="myPhoto" style="width:100%;display:none;border:2px solid green;border-radius:10px">
+<div id="cropArea" style="display:none">
+<p><b>Photo is ready. Now Crop the Question Area:</b></p>
+<button onclick="cropPhoto()" style="background:#9C27B0;color:white;width:100%">✂️ Crop - Only Question Part</button>
+<img id="croppedPhoto" style="width:100%;display:none;border:2px solid purple;border-radius:10px;margin-top:10px">
+<p id="cropMsg" style="display:none;color:green"><b>Cropped Successfully! Now type the question below.</b></p>
+</div>
+</div>
+
+<div class="box">
+<b>4. TYPE YOUR QUESTION</b>
+<input id="q" placeholder="Example: x^4+1=0">
+<button onclick="solveManual()" style="background:#00a651;color:white;width:100%">Get Solution - Step by Step</button>
+<div id="ans"></div>
 </div>
 
 <script>
-function book(){
-let n=document.getElementById('name').value;
-let p=document.getElementById('phone').value;
-let s=document.getElementById('service').value;
-let d=document.getElementById('date').value;
-let a=document.getElementById('address').value;
-if(!n||!p||!a){alert('Naam, Mobile aur Address bharo bhai!');return;}
-let msg="Hi Vaseem Wood Work! New Booking:%0A%0AName: "+n+"%0APhone: "+p+"%0AService: "+s+"%0ADate: "+d+"%0AAddress: "+a+"%0A%0ABengaluru, Karnataka se booking hai.";
-window.open("https://wa.me/919346121033?text="+msg,"_blank");
+let allChapters = {
+"1st to 5th": ["Counting","Addition","Subtraction","Multiplication","Tables 1-20","Division","Fractions"],
+"6th to 8th": ["Number System","Algebra","Ratio & Proportion","Percentage","Geometry","Mensuration"],
+"9th to 10th": ["Real Numbers","Polynomials","Trigonometry","Circles","Probability","Quadratic Equations"],
+"Inter - 11th to 12th": ["Complex Numbers","Differentiation","Integration","Matrices","Vectors","Probability","Trigonometry"],
+"Degree - All Semesters": ["Sem 1 - Maths","Sem 2 - Maths","Sem 3 - Maths","Sem 4 - Maths","Sem 5 - Maths","Sem 6 - Maths"],
+"B.Tech - Sem 1 to 8": ["Sem 1 - M1","Sem 2 - M2","Sem 3 - M3","Sem 4 - M4","Sem 5 - ML","Sem 6 - DL","Sem 7 - Project","Sem 8 - Project"],
+"Diploma - Sem 1 to 6": ["Sem 1 - Maths","Sem 2 - Maths","Sem 3 - Maths","Sem 4 - Maths","Sem 5 - Maths","Sem 6 - Maths"],
+"UPSC - IAS / IPS": ["Number System","Percentage","Profit & Loss","Time & Work","Data Interpretation","Reasoning"]
+};
+let stream=null, lastPhotoData=null;
+async function openCam(mode){
+  let v=document.getElementById('cam'); v.style.display='block';
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:mode}}); v.srcObject=stream; document.getElementById('camStatus').innerHTML="Camera is ON."; }
+  catch(e){ alert('Please Allow Camera - Click Lock Icon > Allow'); }
 }
-</script>
-</body>
-</html>
+function takePhoto(){
+  let v=document.getElementById('cam');
+  if(!v.srcObject){ alert('First click Front or Back Camera'); return; }
+  let canvas=document.getElementById('canvas');
+  canvas.width=v.videoWidth; canvas.height=v.videoHeight;
+  canvas.getContext('2d').drawImage(v,0,0);
+  lastPhotoData = canvas.toDataURL();
+  let img=document.getElementById('myPhoto');
+  img.src=lastPhotoData; img.style.display='block';
+  document.getElementById('camStatus').innerHTML="Photo Taken Successfully!";
+  document.getElementById('cropArea').style.display='block';
+}
+function cropPhoto(){
+  // Auto Crop - Center 80% part, only question area
+  let img = new Image();
+  img.onload = function(){
+    let c = document.createElement('canvas');
+    let crop
