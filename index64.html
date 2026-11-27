@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Saathi</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+body{font-family:Arial;padding:12px;background:#f0f0f0}
+.box{background:white;padding:14px;border-radius:12px;margin-top:12px}
+select,input{width:100%;padding:12px;margin:6px 0;box-sizing:border-box}
+button{padding:12px 16px;border:none;border-radius:10px;margin:4px}
+video{width:100%;max-width:320px;border-radius:10px;background:black;display:none}
+.formulaCard{background:#eef7ff;padding:12px;border-radius:8px;margin:6px 0}
+.ans{background:#fffde7;padding:14px;border-radius:10px;line-height:1.9;margin-top:10px;border:1px solid #ffe082}
+</style>
+</head>
+<body>
+<h2>Study Saathi - All India</h2>
+
+<div class="box">
+<b>1. SECTION CHUNO</b>
+<select id="section" onchange="loadChapters()">
+<option>1st to 5th</option>
+<option>6th to 8th</option>
+<option>9th to 10th</option>
+<option>Inter - 11th to 12th</option>
+<option>Degree - B.Sc / B.Com / BA - All Semesters</option>
+<option>B.Tech - 1st to 4th Year - Sem 1 to 8</option>
+<option>Diploma - Sem 1 to 6</option>
+<option>UPSC - IAS / IPS</option>
+</select>
+
+<b>2. CHAPTER CHUNO</b>
+<select id="chapter" onchange="showFormula()"></select>
+<div id="formulaBox"></div>
+</div>
+
+<div class="box">
+<b>3. CAMERA - ChatGPT Jaisa</b><br>
+<button onclick="openCam('user')" style="background:#2196F3;color:white">🤳 Front</button>
+<button onclick="openCam('environment')" style="background:#FF9800;color:white">📷 Back</button>
+<button onclick="closeCam()" style="background:#999;color:white">Close</button><br><br>
+<video id="cam" autoplay playsinline></video>
+<canvas id="canvas" style="display:none"></canvas><br>
+<button onclick="takePhoto()" style="background:green;color:white;width:100%">📸 PHOTO LO - AUTO ANSWER AAYEGA</button>
+<p id="camStatus">Camera band hai. Front ya Back dabao.</p>
+</div>
+
+<div class="box">
+<b>4. YA QUESTION LIKHO</b>
+<input id="q" placeholder="Example: x^4+1=0 ya Differentiate x^2">
+<button onclick="solveManual()" style="background:#00a651;color:white;width:100%">Get Easy Answer - Step by Step</button>
+<div id="ans"></div>
+</div>
+
+<script>
+let allChapters = {
+"1st to 5th": ["Counting","Addition","Subtraction","Multiplication","Tables 1-20","Division","Fractions","Shapes","Money & Time","Measurement"],
+"6th to 8th": ["Number System","Fractions & Decimals","Algebra","Ratio & Proportion","Percentage","Geometry","Mensuration","Data Handling","Introduction to Graphs","Practical Geometry"],
+"9th to 10th": ["Real Numbers","Polynomials","Linear Equations","Triangles","Circles","Trigonometry","Surface Areas & Volumes","Probability","Statistics","Quadratic Equations","Coordinate Geometry","Arithmetic Progression"],
+"Inter - 11th to 12th": ["Complex Numbers","Differentiation","Integration","Matrices & Determinants","Vectors & 3D Geometry","Probability","Limits & Continuity","Differential Equations","Trigonometry","Sets & Functions","Straight Lines","Conic Sections"],
+"Degree - B.Sc / B.Com / BA - All Semesters": ["Sem 1 - Maths","Sem 2 - Maths","Sem 3 - Maths","Sem 4 - Maths","Sem 5 - Maths","Sem 6 - Maths","Accountancy","Statistics","Physics","Chemistry"],
+"B.Tech - 1st to 4th Year - Sem 1 to 8": ["Sem 1 - M1 - Matrices & Calculus","Sem 2 - M2 - Laplace & Fourier","Sem 3 - M3 - Probability & PDE","Sem 4 - M4 - Discrete Maths","Sem 5 - Machine Learning","Sem 6 - Deep Learning","Sem 7 - Project","Sem 8 - Project"],
+"Diploma - Sem 1 to 6": ["Sem 1 - Engineering Maths","Sem 2 - Engineering Maths","Sem 3 - Engineering Maths","Sem 4 - Engineering Maths","Sem 5 - Engineering Maths","Sem 6 - Project"],
+"UPSC - IAS / IPS": ["Number System","Percentage","Profit & Loss","Time & Work","Time Speed Distance","Ratio & Average","Data Interpretation","Reasoning","Permutation & Combination","CSAT Maths"]
+};
+let formulasData = {
+"Complex Numbers": "i^2 = -1, i^3 = -i, i^4 = 1<br>cis θ = cos θ + i sin θ<br>|z| = √(a²+b²)<br>(a+ib)+(c+id) = (a+c)+i(b+d)",
+"Differentiation": "d/dx (x^n) = n x^(n-1)<br>d/dx (sin x) = cos x<br>d/dx (cos x) = -sin x<br>d/dx (e^x) = e^x<br>d/dx (log x) = 1/x",
+"Trigonometry": "sin²θ + cos²θ = 1<br>1+tan²θ = sec²θ<br>1+cot²θ = cosec²θ<br>sin(90-θ)=cosθ",
+"Polynomials": "Sum = -b/a, Product = c/a<br>(a+b)² = a²+2ab+b²<br>a²-b² = (a+b)(a-b)"
+};
+let stream=null;
+async function openCam(mode){
+  let v=document.getElementById('cam'); v.style.display='block';
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:mode}}); v.srcObject=stream; document.getElementById('camStatus').innerHTML = mode=='user'?"Front Camera ON hai":"Back Camera ON hai"; }
+  catch(e){ alert('Chrome me Lock icon pe click karke Camera Allow karo'); }
+}
+function closeCam(){ if(stream) stream.getTracks().forEach(t=>t.stop()); document.getElementById('cam').style.display='none'; document.getElementById('camStatus').innerHTML="Camera band hai."; }
+
+function loadChapters(){
+  let sec=document.getElementById('section').value;
+  let ch=document.getElementById('chapter'); ch.innerHTML="";
+  allChapters[sec].forEach(x=> ch.innerHTML+="<option>"+x+"</option>");
+  showFormula();
+}
+function showFormula(){
+  let ch=document.getElementById('chapter').value;
+  let f = formulasData[ch] || "1. Main Formula of "+ch+"<br>2. Important Formula 2<br>3. Important Formula 3<br>4. Example Formula";
+  // Jump nahi hoga, yahi pe khulega
+  document.getElementById('formulaBox').innerHTML = `<div class="formulaCard"><b>📦 Formula Box - ${ch}</b><br><br>${f}<br><br><small>Dabane pe yahi khulta hai, last me nahi jata.</small></div>`;
+}
+async function takePhoto(){
+  let v=document.getElementById('cam');
+  if(!v.srcObject){ alert('Pehle Front ya Back Camera dabao'); return; }
+  let canvas=document.getElementById('canvas');
+  canvas.width=v.videoWidth; canvas.height=v.videoHeight;
+  canvas.getContext('2d').drawImage(v,0,0);
+  document.getElementById('camStatus').innerHTML="Photo liya... Ab question padh raha hoon, 5 second ruko...";
+  try{
+    let result = await Tesseract.recognize(canvas, 'eng');
+    let text = result.data.text.replace(/\s/g,'');
+    document.getElementById('camStatus').innerHTML="Photo me mila: "+result.data.text;
+    document.getElementById('q').value = result.data.text;
+    solveManual(text);
+  }catch(e){ document.getElementById('camStatus').innerHTML="Photo padh nahi paya, neeche likh ke bhejo."; }
+}
+function solveManual(photoText){
+  let q = (photoText || document.getElementById('q').value || "").trim();
+  let ch = document.getElementById('chapter').value;
+  let ans = document.getElementById('ans');
+  let clean = q.toLowerCase().replace(/\s/g,'');
+  if(clean.includes("x^4+1") || clean.includes("x4+1") || q.includes("x^4")){
+    ans.innerHTML = `<div class="ans">
+    <b>Question: Solve x⁴+1=0</b><br>
+    <b>Chapter: Complex Numbers</b><br><br>
+    <b>Formula Jo Lagega:</b> cis θ = cos θ + i sin θ<br><br>
+    <b>Easy Method - Step by Step:</b><br>
+    <b>Step 1:</b> x⁴ + 1 = 0 => x⁴ = -1<br>
+    <b>Step 2:</b> -1 = cos π + i sin π = cis π<br>
+    <b>Step 3:</b> x = (cis π)<sup>1/4</sup> = cis (2k+1)π/4, k=0,1,2,3<br>
+    <b>Step 4:</b> k=0 => cis π/4 = 1/√2 + i 1/√2<br>
+    k=1 => cis 3π/4 = -1/√2 + i 1/√2<br>
+    k=2 => cis 5π/4 = -1/√2 - i 1/√2<br>
+    k=3 => cis 7π/4 = 1/√2 - i 1/√2<br><br>
+    <b>Final Answer: Upar wale 4 roots.</b><br>
+    <b>Check:</b> Koi bhi root daalo, answer 0 aayega.
+    </div>`;
+  } else if(clean.includes("x^2+5x+6") || clean.includes("x2+5x")){
+    ans.innerHTML = `<div class="ans"><b>Question: x²+5x+6=0</b><br><b>Formula:</b> Sum = -b/a = -5, Product = 6<br><b>Step 1:</b> 6 = 2 x 3, 2+3=5<br><b>Step 2:</b> x²+2x+3x+6 = (x+2)(x+3)<br><b>Final Answer: x = -2, -3</b></div>`;
+  } else {
+    ans.innerHTML = `<div class="ans"><b>Question:</b> ${q}<br><b>Chapter:</b> ${ch}<br><br><b>Easy Method:</b><br><b>Step 1 - Formula:</b> Upar Formula Box wala formula lagao.<br><b>Step 2 - Todo:</b> Question ko chote-chote parts me todo.<br><b>Step 3 - Solve:</b> Ek-ek part solve karo.<br><b>Step 4 - Check:</b> Answer ko wapas daal ke check karo.<br><br>Abhi maine 2 questions ke pure answers daale hai - <b>x^4+1=0</b> aur <b>x^2+5x+6</b>. Tu koi bhi ek photo bhej, main uska answer isi me jod dunga.</div>`;
+  }
+}
+loadChapters();
+</script>
+</body>
+</html>
