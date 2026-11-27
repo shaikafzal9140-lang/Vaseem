@@ -1,0 +1,57 @@
+# Study Saathi - Full Code - Feature 1 + Feature 2
+
+print("===== Welcome to Study Saathi =====")
+print("1 - Teacher / Student Homework")
+print("2 - Doubt Solver - Board Style")
+print("3 - Photo Wala Question")
+
+choice = input("1, 2 ya 3 likh bhai: ")
+
+# ---------- FEATURE 1 ----------
+if choice == "1":
+    print("\n--- Feature 1: Homework ---")
+    role = input("Tu kaun hai? student / teacher likh: ")
+
+    if role == "teacher":
+        homework = input("Aaj ka homework kya de rahe ho? ")
+        print("Ho gaya! Homework sab students ko bhej diya:", homework)
+        print("Teacher Power: Attendance + Marks bhi yahin se hoga")
+
+    elif role == "student":
+        print("Aaj ka Homework: Python ke 5 sawal karne hai")
+        print("Notes: Python me print() se likhte hai")
+        doubt = input("Tera koi doubt hai to likh: ")
+        print("Tera doubt teacher ko bhej diya:", doubt)
+
+# ---------- FEATURE 2 ----------
+elif choice == "2":
+    print("\n--- Feature 2: Doubt Solver ---")
+    print("Example: Differentiate x^2 + 3x")
+    q = input("Tera question likh: ")
+
+    print("\nTeacher Board Style Answer:")
+    print("Step 1 - Kya diya hai? ", q)
+    print("Step 2 - Kaunsa formula lagega? Formula yaad karo")
+
+    print("\nMethod 1 - Formula Wala:")
+    print("x^2 ka = 2x")
+    print("3x ka = 3")
+    print("Final Answer = 2x + 3")
+
+    print("\nMethod 2 - Aasan Wala:")
+    print("Dono ko alag-alag karo, phir jod do")
+    print("Final Answer = 2x + 3")
+    print("\nSamajh aaya? Nahi aaya to phir se pooch")
+
+# ---------- FEATURE 3 - Photo Wala ----------
+elif choice == "3":
+    print("\n--- Feature 3: Photo / Camera ---")
+    print("Camera ka button yahan aayega")
+    print("Abhi ke liye photo ka naam likh de")
+    photo = input("Photo ka naam likh, jaise maths.jpg: ")
+    print("Photo mil gayi:", photo)
+    print("AI ab isko padh raha hai...")
+    print("Thodi der me Board Style me Step-by-Step answer aa jayega")
+
+else:
+    print("1, 2 ya 3 sahi se likh bhai")
