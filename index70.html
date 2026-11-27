@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Study Saathi AI</title>
+<style>
+body{font-family:Arial;padding:12px;background:#f0f0f0}
+.box{background:white;padding:14px;border-radius:12px;margin-top:12px}
+button{padding:12px 16px;border:none;border-radius:10px;margin:4px;width:100%}
+video{width:100%;max-width:320px;border-radius:10px;background:black;display:none}
+.ans{background:#fffde7;padding:14px;border-radius:10px;line-height:1.9;margin-top:10px;white-space:pre-wrap}
+input{width:100%;padding:12px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<h2>Study Saathi AI</h2>
+<p>Photo -> Answer in Easy Steps</p>
+
+<div class="box">
+<b>1. CAMERA</b><br>
+<button onclick="openCam('user')" style="background:#2196F3;color:white">Front Camera</button>
+<button onclick="openCam('environment')" style="background:#FF9800;color:white">Back Camera</button><br>
+<video id="cam" autoplay playsinline></video>
+<canvas id="canvas" style="display:none"></canvas><br>
+<button onclick="takePhoto()" style="background:green;color:white">Take Photo</button>
+<p id="camStatus">Camera is OFF.</p>
+<img id="myPhoto" style="width:100%;display:none;border:2px solid green;border-radius:10px">
+</div>
+
+<div class="box">
+<b>2. TYPE QUESTION OR USE PHOTO</b>
+<input id="q" placeholder="Example: Solve x^4+1=0">
+<button onclick="getAnswer()" style="background:#00a651;color:white">Get Solution - Step by Step</button>
+<div id="ans"></div>
+</div>
+
+<script>
+// *** YAHAN APNI KEY PASTE KAR ***
+const API_KEY = "PASTE_YOUR_KEY_HERE";
+let stream=null, lastPhotoBase64=null;
+
+async function openCam(mode){
+  let v=document.getElementById('cam'); v.style.display='block';
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:mode}}); v.srcObject=stream; document.getElementById('camStatus').innerHTML="Camera is ON."; }
+  catch(e){ alert('Please Allow Camera - Click Lock Icon > Allow'); }
+}
+function takePhoto(){
+  let v=document.getElementById('cam');
+  if(!v.srcObject){ alert('First click Front or Back Camera'); return; }
+  let canvas=document.getElementById('canvas');
+  // CROP - Center part only, question area
+  let cw = v.videoWidth * 0.9, ch = v.videoHeight * 0.6;
+  let cx = (v.videoWidth - cw)/2, cy = (v.videoHeight - ch)/2;
+  canvas.width=cw; canvas.height=ch;
+  canvas.getContext('2d').drawImage(v, cx, cy, cw, ch, 0, 0, cw, ch);
+  lastPhotoBase64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+  let img=document.getElementById('myPhoto');
+  img.src=canvas.toDataURL(); img.style.display='block';
+  document.getElementById('camStatus').innerHTML="Photo Taken & Cropped Successfully! Now click Get Solution.";
+}
+async function getAnswer(){
+  let q=document.getElementById('q').value.trim();
+  let ansBox=document.getElementById('ans');
+  if(!q && !lastPhotoBase64){ alert('Photo lo ya Question likho'); return; }
+  if(API_KEY=="PASTE_YOUR_KEY_HERE"){ alert('Pehle upar API_KEY me apni Key Paste karo'); return; }
+  ansBox.innerHTML="Please wait... AI is solving...";
+  let parts=[];
+  if(q) parts.push({text:"Solve this in English, Step by Step, Easy Method for student: "+q});
+  else parts.push({text:"Solve this question in photo in English, Step by Step, Easy Method for student. Give Final Answer also."});
+  if(lastPhotoBase64) parts.push({inline_data:{mime_type:"image/jpeg", data:lastPhotoBase64}});
+  try{
+    let res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:[{parts:parts}]})
+    });
+    let data=await res.json();
+    let text=data.candidates[0].content.parts[0].text;
+    ansBox.innerHTML=`<div class="ans">${text}</div>`;
+  }catch(e){ ansBox.innerHTML="Error: Key galat hai ya Internet slow hai. Dobara try karo."; }
+}
+</script>
+</body>
+</html>
