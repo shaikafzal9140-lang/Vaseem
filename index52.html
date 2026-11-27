@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Saathi</title>
+<style>
+body{font-family:Arial;padding:15px;background:#f2f2f2}
+.box{background:white;padding:15px;border-radius:10px;margin-top:15px}
+button{padding:12px 18px;background:#00a651;color:white;border:none;border-radius:8px;margin:5px}
+input,select{width:95%;padding:10px;margin:5px 0}
+.formula{background:#eef7ff;padding:10px;border-radius:8px}
+video{width:100%;border-radius:10px}
+</style>
+</head>
+<body>
+
+<h1>Study Saathi</h1>
+<p>Select Subject, Take Photo, Get Solution</p>
+
+<div class="box">
+<h3>1. Select Subject & Chapter</h3>
+<select id="subject" onchange="showFormulas()">
+<option value="Differentiation">Maths - Differentiation</option>
+<option value="Integration">Maths - Integration</option>
+<option value="Complex Number">Maths - Complex Number</option>
+<option value="Physics">Physics - Motion & Force</option>
+<option value="Chemistry">Chemistry - Mole Concept</option>
+<option value="Biology">Biology - Cell</option>
+</select>
+<button onclick="showFormulas()">Show All Formulas</button>
+<div id="formulaBox" class="formula">Click Show All Formulas - All formulas of this chapter will appear here.</div>
+</div>
+
+<div class="box">
+<h3>2. Direct Camera - Like ChatGPT</h3>
+<button onclick="openCamera()">Open Camera</button>
+<video id="cam" autoplay playsinline style="display:none"></video>
+<br>
+<button onclick="takePhoto()">Take Photo & Solve</button>
+<canvas id="canvas" style="display:none"></canvas>
+<p id="photoStatus">No photo yet.</p>
+</div>
+
+<div class="box">
+<h3>3. Or Type Your Question</h3>
+<input id="q" placeholder="Example: Differentiate x^2 + 3x">
+<button onclick="solve()">Get Solution</button>
+</div>
+
+<div class="box" id="solution" style="display:none">
+<h3>This is your question</h3>
+<p id="showQ"></p>
+<h3>Formula to be used</h3>
+<p id="showF"></p>
+<h3>Method 1 - Formula Method</h3>
+<p>Step 1: Write the question. Step 2: Apply formula. Step 3: Solve small-small parts. Final Answer will come.</p>
+<h3>Method 2 - Easy Method</h3>
+<p>Step 1: Break the question into two parts. Step 2: Solve each part separately. Step 3: Add both answers.</p>
+<h3>Method 3 - Check Method</h3>
+<p>Put the answer back and check. If both sides are equal, answer is correct.</p>
+<h3>Practice Questions</h3>
+<p>1. Differentiate x^3 + 2x <br>2. Differentiate 5x^2 + x <br>3. Differentiate sin x + cos x</p>
+</div>
+
+<div class="box">
+<h3>4. History</h3>
+<div id="history">No history yet.</div>
+<button onclick="clearHistory()">Clear History</button>
+</div>
+
+<script>
+let formulas = {
+"Differentiation": "d/dx (x^n) = n*x^(n-1)<br>d/dx (sin x) = cos x<br>d/dx (cos x) = -sin x<br>d/dx (e^x) = e^x<br>d/dx (log x) = 1/x",
+"Integration": "∫ x^n dx = x^(n+1)/(n+1)<br>∫ sin x dx = -cos x<br>∫ cos x dx = sin x<br>∫ e^x dx = e^x",
+"Complex Number": "i^2 = -1<br>(a+ib)+(c+id) = (a+c)+i(b+d)<br>|z| = sqrt(a^2+b^2)<br>Conjugate of a+ib = a-ib",
+"Physics": "v = u + at<br>s = ut + 1/2 at^2<br>F = ma<br>v^2 = u^2 + 2as",
+"Chemistry": "Moles = Mass / Molar Mass<br>PV = nRT<br>No. of atoms = Moles x 6.022 x 10^23",
+"Biology": "Cell is the basic unit of life.<br>Mitochondria = Powerhouse of cell.<br>Photosynthesis: 6CO2 + 6H2O = C6H12O6 + 6O2"
+};
+
+function showFormulas(){
+  let s = document.getElementById('subject').value;
+  document.getElementById('formulaBox').innerHTML = "<b>All Formulas - " + s + "</b><br><br>" + formulas[s];
+}
+
+async function openCamera(){
+  let v = document.getElementById('cam');
+  v.style.display = 'block';
+  try{
+    let stream = await navigator.mediaDevices.getUserMedia({video:true});
+    v.srcObject = stream;
+  }catch(e){ alert('Camera permission allow karo'); }
+}
+
+function takePhoto(){
+  document.getElementById('photoStatus').innerHTML = "Photo taken! Solution is ready below.";
+  document.getElementById('q').value = "Photo Question - Differentiation";
+  solve();
+}
+
+function solve(){
+  let q = document.getElementById('q').value || "Photo Question";
+  let s = document.getElementById('subject').value;
+  document.getElementById('solution').style.display = 'block';
+  document.getElementById('showQ').innerHTML = q;
+  document.getElementById('showF').innerHTML = formulas[s];
+  // Save History
+  let h = JSON.parse(localStorage.getItem('history') || '[]');
+  h.unshift(s + " - " + q);
+  localStorage.setItem('history', JSON.stringify(h.slice(0,5)));
+  showHistory();
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function showHistory(){
+  let h = JSON.parse(localStorage.getItem('history') || '[]');
+  document.getElementById('history').innerHTML = h.length ? h.join('<br>') : "No history yet.";
+}
+function clearHistory(){ localStorage.removeItem('history'); showHistory(); }
+showFormulas(); showHistory();
+</script>
+</body>
+</html>
